@@ -7,21 +7,23 @@ object calculateRSI {
     // init ListBuffer
     val resRSI = new ListBuffer[Double]()
 
-    // definition de A
-    def A(n : Int) : Double = 2 / (1 + n)
-
     // definition de la Moyenne Mobile Exponnetiel d'une List de valeurs (Haute ou Basse) values sur n jours
     def MME(values : ArrayBuffer[Double]) : List[Double] = {
       val result = new ListBuffer[Double]()
 
       // definition de MME d'indice t (Recursivité)
       def MMEt(t : Int) : Double = {
+        //println("INDICE: "+t)
         if ( t==0 ) 0.0
-        else values.get(t)*A(n)+MMEt(t-1)*(1-A(n))
+        else {
+          val zyx = values.get(t) * (2.00/(n+1.00)) + MMEt(t - 1) * (1 - (2.00/(n+1.00)))
+          zyx
+        }
       }
-      for( x <- 0 to n){
+      for( x <- 0 to (n-1)){
         result+=MMEt(x)
       }
+      //print("RESULT: "+result.toList)
       result.toList
     }
 
@@ -32,14 +34,15 @@ object calculateRSI {
     }
 
     // resolution du RSI
-    for(y <- 0 to n){
-      val H:ListBuffer[Double] = ListBuffer[Double]
-      val B:ListBuffer[Double] = ListBuffer[Double]
+    for(y <- 0 to (n-1)){
+      val H:ListBuffer[Double] = ListBuffer()
+      val B:ListBuffer[Double] = ListBuffer()
       listValue.map{
-        c => H+=c.getHigh()
-          B+=c.getLow()
+        c => H+=c.getHigh();
+        B+=c.getLow()
       }
-      resRSI+= HoB(H.toArray)(y)*100/(HoB(H.toArray)(y)-HoB(B.toArray)(y))
+      //resRSI+= HoB(H.toArray)(y)/(HoB(H.toArray)(y)-HoB(B.toArray)(y))
+      resRSI+=100 - (100/(1+(HoB(H.toArray)(y)/HoB(B.toArray)(y))))
     }
     resRSI.toList
   }
