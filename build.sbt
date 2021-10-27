@@ -15,3 +15,5 @@ libraryDependencies  ++= Seq(
   // It depends on LGPL code
   "org.scalanlp" %% "breeze-viz" % "1.3"
 )
+
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % "test"
